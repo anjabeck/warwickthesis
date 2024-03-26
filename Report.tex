@@ -1,0 +1,236 @@
+% Define our beloved Warwick colour:
+\RequirePackage{xcolor}
+\xdefinecolor{Wbrand}{HTML}{3C1053}
+\xdefinecolor{Wmain}{HTML}{41748D}%507F70}
+
+\colorlet{maincolour}{Wmain} % use a secondary/tertiary brand colour for the main document, using dark blue here
+\colorlet{brandcolour}{Wbrand} % brand colour for title page only because dark purple and black are difficult to distinguish
+
+\documentclass[
+  muchcolor,     % remove for less color,
+  BCOR=12mm,     % 12mm binding corrections, adjust to fit your binding
+  parskip=half,  % new paragraphs start with half line vertical space
+  open=odd,      % chapters start on both odd and even pages
+  cleardoublepage=plain,  % no header/footer on blank pages
+  maincolour = maincolour,
+  brandcolour = Wbrand,
+]{warwickthesis}
+
+
+% Warning, if another latex run is needed
+\usepackage[aux]{rerunfilecheck}
+
+% just list chapters and sections in the toc, not subsections or smaller
+\setcounter{tocdepth}{1}
+
+% have toc for every chapter
+\usepackage{minitoc}
+\NewDocumentCommand{\myminitoc}{}{
+  \textcolor{maincolour}{\rule{\textwidth}{3pt}}%
+  \vspace{-30pt}%
+  \minitoc%
+  \vspace{-20pt}%
+  \textcolor{maincolour}{\rule{\textwidth}{3pt}}
+  \clearpage
+}
+% \usepackage{colortbl} % change color for table of contents lines
+\mtcsettitle{minitoc}{} % don't show title for minitoc
+\mtcsetrules{*}{off}
+\setcounter{minitocdepth}{2}
+
+%------------------------------------------------------------------------------
+%------------------------------ Fonts, Unicode, Language ----------------------
+%------------------------------------------------------------------------------
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}  % -- becomes en-dash etc.
+\usepackage{lato} % Warwick style sffamily
+
+% german language
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+
+% for english abstract and english titles in the toc
+\setotherlanguages{german}
+
+% intelligent quotation marks, language and nesting sensitive
+\usepackage[autostyle]{csquotes}
+
+% microtypographical features, makes the text look nicer on the small scale
+\usepackage{microtype}
+
+%------------------------------------------------------------------------------
+%------------------------ Math Packages and settings --------------------------
+%------------------------------------------------------------------------------
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+
+% Enable Unicode-Math and follow the ISO-Standards for typesetting math
+\usepackage[
+  math-style=ISO,
+  bold-style=ISO,
+  sans-style=italic,
+  nabla=upright,
+  %partial=upright,
+]{unicode-math}
+\setmathfont{Latin Modern Math}
+
+% nice, small fracs for the text with \sfrac{}{}
+\usepackage{xfrac}  
+
+%------------------------------------------------------------------------------
+%---------------------------- Numbers and Units -------------------------------
+%------------------------------------------------------------------------------
+
+\usepackage[
+  separate-uncertainty=true,
+  per-mode=symbol-or-fraction,
+  %binary-units,
+]{siunitx}
+\DeclareSIUnit\bar{bar}
+
+%------------------------------------------------------------------------------
+%-------------------------------- tables  -------------------------------------
+%------------------------------------------------------------------------------
+
+\usepackage{booktabs}       % \toprule, \midrule, \bottomrule, etc
+
+%------------------------------------------------------------------------------
+%-------------------------------- graphics -------------------------------------
+%------------------------------------------------------------------------------
+
+\usepackage{graphicx}
+% currently broken
+% \usepackage{grffile}
+
+% allow figures to be placed in the running text by default:
+\usepackage{scrhack}
+\usepackage{float}
+
+
+% keep figures and tables in the section
+\usepackage[section]{placeins}
+
+
+%------------------------------------------------------------------------------
+%---------------------- customize list environments ---------------------------
+%------------------------------------------------------------------------------
+
+\usepackage{enumitem}
+\usepackage{todonotes}
+\usepackage[compat=1.1.0]{tikz-feynman}
+%\usepackage[force]{feynmp-auto} use this if you have time
+
+\usepackage{multirow}
+\usepackage{nicefrac}
+\usepackage{physics}
+\usepackage{setspace}
+
+\usepackage{diagbox} % diagonal line in table
+
+
+%------------------------------------------------------------------------------
+%------------------------------ Bibliographie ---------------------------------
+%------------------------------------------------------------------------------
+
+\usepackage[
+  style=ext-numeric-comp,
+  backend=biber,   % use modern biber backend
+  autolang=hyphen, % load hyphenation rules for if language of bibentry is not
+                   % german, has to be loaded with \setotherlanguages
+                   % in the references.bib use langid={en} for english sources
+  sorting=none,
+  articlein=false,
+]{biblatex}
+\addbibresource{references.bib}
+\DefineBibliographyStrings{english}{andothers = {{et\,al\adddot}}}  % replace u.a. with et al.
+\DeclareFieldFormat{journaltitle}{#1\isdot}
+\DeclareFieldFormat[article,book,thesis]{title}{\mkbibitalic{#1}}
+
+\makeatletter
+\preto{\printbibliography}{%
+  \cleardoublepage
+  %\pagestyle{empty}%
+  %\let\ps@plain\ps@empty
+  %\let\thepage\@empty
+  \part*{Bibliography}%
+  \addcontentsline{toc}{part}{Bibliography}%
+}
+\makeatother
+
+% Last packages, do not change order or insert new packages after these ones
+\usepackage[pdfusetitle, unicode, hidelinks]{hyperref}%, linkbordercolor=Wskyblue2]{hyperref}
+\usepackage{bookmark}
+\usepackage[shortcuts]{extdash}
+
+
+% Symbols
+\usepackage{ifthen}
+\newboolean{uprightparticles}
+\setboolean{uprightparticles}{false} %Set true for upright particle symbols
+\usepackage{xspace} 
+\usepackage{upgreek}
+\renewcommand{\floatpagefraction}{.95}%
+\renewcommand{\textfraction}{0.01}%
+ 
+% Load the package with the acronym option
+\usepackage[acronym]{glossaries}
+% Generate the glossary
+\makenoidxglossaries
+\input{Report/Preamble/Abbreviations}    % glossary
+
+% new commands
+\renewcommand{\d}{\text{d}}
+\usepackage{pdfpages}
+\usepackage{relsize}
+\linespread{1.25}
+\usepackage{comment}
+\usepackage{fontawesome}
+
+% no need to load etoolbox
+\makeatletter
+\preto{\appendix}{%
+  \cleardoublepage
+  \thispagestyle{plain}%
+  \part*{Appendix}%
+  \addtocontents{toc}{\protect\contentsline{part}{Appendix\protect\numberline{}}{}{}}
+}
+\makeatother
+\title{Thesis template}
+
+\begin{document}
+% front part, page numbers with roman numerals
+\frontmatter
+\input{Report/Preamble/Frontpage}        % title page
+
+\dominitoc%[n] % create toc per chapter without "contents" header
+\begin{spacing}{1}
+\tableofcontents
+\end{spacing}
+
+\input{Report/Preamble/Lists}            % list of figures and tables
+\input{Report/Preamble/Acknowledgements} % acknowledgements
+\input{Report/Preamble/Declarations}     % declarations
+\input{Report/Preamble/Abstract}         % abstract
+
+% main part, page numbers with arabic numerals
+\mainmatter
+
+\input{Report/Content/information}
+
+\clearpage
+
+% back part, page numbers with roman numerals
+\appendix
+\appendixpagenumbering
+\input{Report/Appendices/Appendices}
+
+\clearpage
+
+\backmatter
+\backpagenumbering
+
+\printbibliography[heading=none]
+
+\end{document}
